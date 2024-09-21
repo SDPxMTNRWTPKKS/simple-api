@@ -8,3 +8,4 @@ RUN pip install -r /app/requirements.txt
 EXPOSE 5000
 COPY . .
 CMD ["flask", "run"]
+RUN apk add --no-cache bash
