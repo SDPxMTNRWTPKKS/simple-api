@@ -11,7 +11,7 @@ services:
       - ./app:/app
     command: >
       sh -c "python3 -m unittest discover -s /app/tests && 
-               gunicorn --bind 0.0.0.0:5000 app:app"
+             gunicorn --bind 0.0.0.0:5000 app:app"
   
   robot:
     image: python:3.9
@@ -21,4 +21,4 @@ services:
       - api
     command: >
       sh -c "pip install -r /simple-api-robot/requirements.txt && 
-               robot /robot/test-calculate.robot"
+             robot /robot/test-calculate.robot"
