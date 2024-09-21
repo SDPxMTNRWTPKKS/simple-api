@@ -20,5 +20,5 @@ services:
     depends_on:
       - api
     command: >
-      bash -c "pip install -r /robot/requirements.txt && 
+      bash -c "pip install -r /simple-api-robot/requirements.txt && 
                robot /robot/test-calculate.robot"
