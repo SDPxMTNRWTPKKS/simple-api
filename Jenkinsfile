@@ -46,13 +46,12 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-creds-id', usernameVariable: 'DOCKER_CREDS_USR', passwordVariable: 'DOCKER_CREDS_PSW')]) {
                     script {
-                        sh """ssh ${VMPREPROD} """
-                        sh """ sudo docker stop simple-api-container || true && sudo docker rm -f simple-api-container || true """
-                        sh """ echo "${DOCKER_CREDS_PSW}" | sudo docker login registry.gitlab.com -u ${DOCKER_CREDS_USR} --password-stdin && docker pull ${DOCKER_IMAGE} """
-                        sh """ echo "${ROOT_PASSWORD_VMPREPROD}" | sudo -S docker run -d --name simple-api-container -p 5000:5000 ${DOCKER_IMAGE} """
+                        sh "ssh ${VMPREPROD} "
+                        sh "sudo docker stop simple-api-container || true && sudo docker rm -f simple-api-container || true"
+                        sh "echo '${DOCKER_CREDS_PSW}' | sudo docker login registry.gitlab.com -u ${DOCKER_CREDS_USR} --password-stdin && docker pull ${DOCKER_IMAGE}"
+                        sh "echo '${ROOT_PASSWORD_VMPREPROD}' | sudo -S docker run -d --name simple-api-container -p 5000:5000 ${DOCKER_IMAGE} || true"
                     }
                 }
             }
         }
-    }
 }
