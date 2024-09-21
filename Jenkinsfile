@@ -10,6 +10,8 @@ pipeline {
         SIMPLE_API_DIR = '~/simple-api'  // Fixed typo
         VMTEST = "vmtest@10.211.55.8"
         VMPREPROD = "vmpreprod@10.211.55.9"
+        ROOT_PASSWORD_VMTEST="vmtest2admin"
+        ROOT_PASSWORD_VMPREPROD="vmpreprod3admin"
     }
     stages {
         stage('CI/CD Pipeline for VMTEST') {
@@ -44,15 +46,10 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-creds-id', usernameVariable: 'DOCKER_CREDS_USR', passwordVariable: 'DOCKER_CREDS_PSW')]) {
                     script {
-                        sh """
-                        ssh ${VMPREPROD} << 'EOF'
-                            sudo docker stop simple-api-container || true
-                            sudo docker rm -f simple-api-container || true
-                            echo "${DOCKER_CREDS_PSW}" | sudo docker login registry.gitlab.com -u ${DOCKER_CREDS_USR} --password-stdin
-                            sudo docker pull ${DOCKER_IMAGE}
-                            sudo docker run -d --name simple-api-container -p 5000:5000 ${DOCKER_IMAGE}
-                        << 'EOF'
-                        """
+                        sh """ssh ${VMPREPROD} """
+                        sh """ sudo docker stop simple-api-container || true && sudo docker rm -f simple-api-container || true """
+                        sh """ echo "${DOCKER_CREDS_PSW}" | sudo docker login registry.gitlab.com -u ${DOCKER_CREDS_USR} --password-stdin && docker pull ${DOCKER_IMAGE} """
+                        sh """ echo "${ROOT_PASSWORD_VMPREPROD}" | sudo -S docker run -d --name simple-api-container -p 5000:5000 ${DOCKER_IMAGE} """
                     }
                 }
             }
