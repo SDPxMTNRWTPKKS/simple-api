@@ -35,7 +35,7 @@ pipeline {
                             robot test-calculate.robot
                             echo "${DOCKER_CREDS_PSW}" | sudo docker login registry.gitlab.com -u ${DOCKER_CREDS_USR} --password-stdin
                             sudo docker push ${DOCKER_IMAGE}
-                        EOF >>
+                        << 'EOF'
                         '''
                     }
                 }
@@ -52,7 +52,7 @@ pipeline {
                             echo "${DOCKER_CREDS_PSW}" | sudo docker login registry.gitlab.com -u ${DOCKER_CREDS_USR} --password-stdin
                             sudo docker pull ${DOCKER_IMAGE}
                             sudo docker run -d --name simple-api-container -p 5000:5000 ${DOCKER_IMAGE}
-                        EOF >>
+                        << 'EOF'
                         '''
                     }
                 }
