@@ -1,0 +1,24 @@
+version: '3'
+services:
+  api:
+    build:
+      context: app
+    ports:
+      - "5000:5000"
+    environment:
+      - ENV=production
+    volumes:
+      - ./app:/app
+    command: >
+      bash -c "python3 -m unittest discover -s /app/tests && 
+               gunicorn --bind 0.0.0.0:5000 app:app"
+  
+  robot:
+    image: python:3.9
+    volumes:
+      - ./simple-api-robot:/robot
+    depends_on:
+      - api
+    command: >
+      bash -c "pip install -r /robot/requirements.txt && 
+               robot /robot/test-calculate.robot"
