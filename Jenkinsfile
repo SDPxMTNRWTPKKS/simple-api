@@ -22,13 +22,13 @@ pipeline {
                             fi
                             cd ~/simple-api
                             git pull origin main
-                            sudo docker-compose down
-                            sudo docker-compose up -d --build --remove-orphans
+                            docker-compose down
+                            docker-compose up -d --build --remove-orphans
                             python3 -m unittest unit_test.py -v
                             cd ${API_ROBOT_DIR}
                             robot test-calculate.robot
-                            echo '${DOCKER_CREDS_PSW}' | sudo docker login registry.gitlab.com -u '${DOCKER_CREDS_USR}' --password-stdin
-                            sudo docker push ${DOCKER_IMAGE}
+                            echo '${DOCKER_CREDS_PSW}' | docker login registry.gitlab.com -u '${DOCKER_CREDS_USR}' --password-stdin
+                            docker push ${DOCKER_IMAGE}
                         EOF
                         """
                     }
@@ -41,10 +41,10 @@ pipeline {
                     script {
                         sh """
                         ssh ${VMPREPROD} << 'EOF'
-                            sudo docker stop simple-api-container || true
-                            sudo docker rm -f simple-api-container || true
-                            echo '${DOCKER_CREDS_PSW}' | sudo docker login registry.gitlab.com -u '${DOCKER_CREDS_USR}' --password-stdin
-                            sudo docker run -d --name simple-api-container -p 5000:5000 ${DOCKER_IMAGE} || true
+                            docker stop simple-api-container || true
+                            docker rm -f simple-api-container || true
+                            echo '${DOCKER_CREDS_PSW}' | docker login registry.gitlab.com -u '${DOCKER_CREDS_USR}' --password-stdin
+                            docker run -d --name simple-api-container -p 5000:5000 ${DOCKER_IMAGE} || true
                         EOF
                         """
                     }
