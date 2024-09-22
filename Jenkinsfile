@@ -4,7 +4,10 @@ pipeline {
         pollSCM('H/1 * * * *')  // Check every 1 minute
     }
     environment {
-        DOCKER_IMAGE = 'registry.gitlab.com/watthachai/simple-api-docker-registry:latest'
+        GITLAB_USER = 'watthachai'
+        GITLAB
+        DOCKER_IMAGE_NAME = 'simple-api-docker-registry'
+        DOCKER_IMAGE_TAG = 'latest'
         API_ROBOT_DIR = '~/simple-api/simple-api-robot'
         VMTEST = "vmtest@10.211.55.8"
         VMPREPROD = "vmpreprod@10.211.55.9"
@@ -41,10 +44,10 @@ pipeline {
                     script {
                         sh """
                         ssh ${VMPREPROD} << 'EOF'
-                            docker stop simple-api-container || true
-                            docker rm -f simple-api-container || true
-                            echo '${DOCKER_CREDS_PSW}' | docker login registry.gitlab.com -u '${DOCKER_CREDS_USR}' --password-stdin
-                            docker run -d --name simple-api-container -p 5000:5000 ${DOCKER_IMAGE} || true
+                            docker ps -a -q -f name=${DOCKER_IMAGE_NAME} | xargs -r docker rm -f"
+                            docker login registry.gitlab.com -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}
+                            docker pull registry.gitlab.com/watthachai/simple-api-docker-registry:${DOCKER_IMAGE_TAG}"
+                            docker run -d --name ${DOCKER_IMAGE_NAME} -p 8080:5050 registry.gitlab.com/watthachai/simple-api-docker-registry:${DOCKER_IMAGE_TAG}"
                         << 'EOF'
                         """
                     }
