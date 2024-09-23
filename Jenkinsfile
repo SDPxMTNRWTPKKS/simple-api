@@ -30,6 +30,8 @@ pipeline {
                 
                 cd ${VMTEST_MAIN_WORKSPACE}
                 python3 -m unittest unit_test.py -v
+                coverage run -m unittest unit_test.py -v
+                coverage report -m
                 '''
             }
         }
