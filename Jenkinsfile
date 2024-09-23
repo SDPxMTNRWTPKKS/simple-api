@@ -51,7 +51,7 @@ pipeline {
             }
         }
         stage("Pull from Gitlab Registry") {
-            agent {label 'connect-preprod'}
+            agent {label 'connect-vmpreprod'}
             steps {
                 withCredentials(
                     [usernamePassword(
