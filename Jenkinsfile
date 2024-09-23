@@ -16,13 +16,14 @@ pipeline {
         stage("Run Tests") {
             agent {label 'connect-vmtest'}
             steps {
-                sh """
+                sh '''
                 . /home/vmtest/env/bin/activate
                 cd ${VMTEST_ROBOT_WORKSPACE}
+                ls -l  # List files to verify existence
                 robot test-calculate.robot
                 cd ${VMTEST_MAIN_WORKSPACE}
                 python3 -m unittest unit_test.py -v
-                """
+                '''
             }
         }
         stage("Delivery") {
