@@ -17,12 +17,12 @@ pipeline {
             agent {label 'connect-vmtest'}
             steps {
                 sh """
-                source ~/env/bin/activate
-                cd ${VMTEST_ROBOT_WORKSPACE}
-                robot test-calculate.robot
-                cd ${VMTEST_MAIN_WORKSPACE}
-                python3 -m unittest unit_test.py -v
-                """
+                    . /home/vmtest/env/bin/activate
+                    cd ${VMTEST_ROBOT_WORKSPACE}
+                    robot test-calculate.robot
+                    cd ${VMTEST_MAIN_WORKSPACE}
+                    python3 -m unittest unit_test.py -v
+                    """
             }
         }
         stage("Delivery") {
