@@ -2,7 +2,6 @@ pipeline {
     agent {label 'connect-vmtest'}
     environment {
         GITLAB_IMAGE_NAME = "registry.gitlab.com/watthachai/simple-api-docker-registry"
-        VMTEST_ROBOT_WORKSPACE = "/home/vmtest/workspace/simple-api-pipeline@2/simple-api-robot/"
         VMTEST_MAIN_WORKSPACE = "/home/vmtest/workspace/simple-api-pipeline@2/"
     }
     stages {
