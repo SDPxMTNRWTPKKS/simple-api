@@ -33,7 +33,7 @@ pipeline {
                 '''
             }
         }
-        stage("Delivery") {
+        stage("Delivery to Gitlab Registry") {
             agent {label 'connect-vmtest'}
             steps {
                 withCredentials(
@@ -47,6 +47,22 @@ pipeline {
                     sh "docker tag ${GITLAB_IMAGE_NAME} ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
                     sh "docker push ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
                     sh "docker rmi ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                }
+            }
+        }
+        stage("Pull from Gitlab Registry") {
+            agent {label 'connect-preprod'}
+            steps {
+                withCredentials(
+                    [usernamePassword(
+                        credentialsId: 'gitlab-registry',
+                        passwordVariable: 'gitlabPassword',
+                        usernameVariable: 'gitlabUser'
+                    )]
+                ){
+                    sh "docker login registry.gitlab.com -u ${gitlabUser} -p ${gitlabPassword}"
+                    sh "docker pull ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    sh "docker run -p 5000:5000 -d ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
                 }
             }
         }
