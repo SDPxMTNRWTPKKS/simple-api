@@ -9,7 +9,7 @@ pipeline {
             steps {
                 sh "echo ${env.APP_NAME}"
                 sh "docker version"
-                sh "docker build -t ${IMAGE_NAME} ."
+                //sh "docker build -t ${IMAGE_NAME} ."
             }
         }
         stage('Test Node VMPREPROD'){
@@ -17,7 +17,7 @@ pipeline {
             steps {
                 sh "echo ${env.APP_NAME}"
                 sh "docker version"
-                sh "docker build -t ${IMAGE_NAME} ."
+                //sh "docker build -t ${IMAGE_NAME} ."
             }
         }
         
