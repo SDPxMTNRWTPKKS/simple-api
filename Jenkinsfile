@@ -9,8 +9,8 @@ pipeline {
         DOCKER_IMAGE_NAME = 'simple-api-docker-registry'
         DOCKER_IMAGE_TAG = 'latest'
         API_ROBOT_DIR = '~/simple-api/simple-api-robot'
-        VMTEST = "vmtest@10.211.55.8"
-        VMPREPROD = "vmpreprod@10.211.55.9"
+        VMTEST = "vmtest@10.211.55.5"
+        VMPREPROD = "vmpreprod@10.211.55.3"
     }
     stages {
         stage('CI/CD Pipeline for VMTEST') {
