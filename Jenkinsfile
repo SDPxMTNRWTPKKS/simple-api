@@ -3,6 +3,8 @@ pipeline {
     environment {
 
         GITLAB_IMAGE_NAME = "registry.gitlab.com/watthachai/simple-api-docker-registry"
+        VMTEST_ROBOT_WORKSPACE = "/home/vmtest/workspace/simple-api-pipeline@2/simple-api-robot/"
+        VMTEST_MAIN_WORKSPACE = "/home/vmtest/workspace/simple-api-pipeline@2/"
     }
     stages {
         stage('Deploy Docker Compose') {
@@ -21,12 +23,39 @@ pipeline {
                         usernameVariable: 'gitlabUser'
                     )]
                 ){
+                    sh
+                    """ 
+                        << 'EOF'
+                        source ~/env/bin/activate
+                        cd ${VMTEST_ROBOT_WORKSPACE}
+                        robot test-calculate.robot
+                        cd ${VMTEST_MAIN_WORKSPACE}
+                        python3 -m unittest unit_test.py -v
+                        << 'EOF'
+
+                    """
                     sh "docker login registry.gitlab.com -u ${gitlabUser} -p ${gitlabPassword}"
                     sh "docker tag ${GITLAB_IMAGE_NAME} ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
-                    sh "docker push ${GITLAB_IMAGE_NAME}"
                     sh "docker push ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
-                    //sh "docker rmi ${GITLAB_IMAGE_NAME}"
-                    //sh "docker rmi ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    sh "docker rmi ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    
+                }
+            }
+        }
+        stage("") {
+            agent {label 'connect-vmtest'}
+            steps {
+                withCredentials(
+                    [usernamePassword(
+                        credentialsId: 'gitlab-registry',
+                        passwordVariable: 'gitlabPassword',
+                        usernameVariable: 'gitlabUser'
+                    )]
+                ){
+                    sh "docker login registry.gitlab.com -u ${gitlabUser} -p ${gitlabPassword}"
+                    sh "docker tag ${GITLAB_IMAGE_NAME} ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    sh "docker push ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    sh "docker rmi ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
                 }
             }
         }
