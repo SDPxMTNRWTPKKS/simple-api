@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('CI/CD Pipeline for VMTEST') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-creds-id', usernameVariable: 'DOCKER_CREDS_USR', passwordVariable: 'DOCKER_CREDS_PSW')]) {
+                withCredentials([usernamePassword(credentialsId: 'gitlabID', usernameVariable: 'DOCKER_CREDS_USR', passwordVariable: 'DOCKER_CREDS_PSW')]) {
                     script {
                         sh """
                         ssh ${VMTEST} << 'EOF'
@@ -40,7 +40,7 @@ pipeline {
         }
         stage('CI/CD Pipeline for VMPREPROD') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-creds-id', usernameVariable: 'DOCKER_CREDS_USR', passwordVariable: 'DOCKER_CREDS_PSW')]) {
+                withCredentials([usernamePassword(credentialsId: 'gitlabID', usernameVariable: 'DOCKER_CREDS_USR', passwordVariable: 'DOCKER_CREDS_PSW')]) {
                     script {
                         sh """
                         ssh ${VMPREPROD} << 'EOF'
