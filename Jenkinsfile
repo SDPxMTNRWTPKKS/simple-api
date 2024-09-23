@@ -23,16 +23,13 @@ pipeline {
                         usernameVariable: 'gitlabUser'
                     )]
                 ){
-                    sh
-                    """ 
-                        << 'EOF'
+                    sh"""<< 'EOF'
                         source ~/env/bin/activate
                         cd ${VMTEST_ROBOT_WORKSPACE}
                         robot test-calculate.robot
                         cd ${VMTEST_MAIN_WORKSPACE}
                         python3 -m unittest unit_test.py -v
-                        << 'EOF'
-
+                    << 'EOF'
                     """
                     sh "docker login registry.gitlab.com -u ${gitlabUser} -p ${gitlabPassword}"
                     sh "docker tag ${GITLAB_IMAGE_NAME} ${GITLAB_IMAGE_NAME}:${env.BUILD_NUMBER}"
