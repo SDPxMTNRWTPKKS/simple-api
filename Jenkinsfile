@@ -23,10 +23,9 @@ pipeline {
                     git clone https://github.com/CE-SDPX/simple-api-robot.git
                 fi
                 
-                cd simple-api-robot
-                
                 # Install dependencies before running tests
-                pip install -r requirements.txt  # Ensure this file exists
+                pip install -r requirements.txt 
+                cd simple-api-robot
                 robot test-calculate.robot
                 
                 cd ${VMTEST_MAIN_WORKSPACE}
